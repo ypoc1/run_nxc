@@ -27,7 +27,11 @@ SERVICES=("smb" "winrm" "ftp" "rdp" "ssh" "mssql" "wmi" "ldap" "vnc")
 # Iterate over each service and run the nxc command
 for SERVICE in "${SERVICES[@]}"; do
     echo "Running nxc with service: $SERVICE"
-    if [[ "$SERVICE" == "smb" || "$SERVICE" == "ssh" || "$SERVICE" == "ftp" || "$SERVICE" == "rdp" ]]; then
+    if [[ "$SERVICE" == "smb" ]]; then
+        # Add the specific command for smb
+        nxc smb "$HOSTS_FILE" -u "$USERS_FILE" -p "$PASSWORDS_FILE" --users
+        nxc "$SERVICE" "$HOSTS_FILE" -u "$USERS_FILE" -p "$PASSWORDS_FILE" --continue-on-success 
+    elif [[ "$SERVICE" == "ssh" || "$SERVICE" == "ftp" || "$SERVICE" == "rdp" ]]; then
         nxc "$SERVICE" "$HOSTS_FILE" -u "$USERS_FILE" -p "$PASSWORDS_FILE" --continue-on-success 
     else
         nxc "$SERVICE" "$HOSTS_FILE" -u "$USERS_FILE" -p "$PASSWORDS_FILE"
